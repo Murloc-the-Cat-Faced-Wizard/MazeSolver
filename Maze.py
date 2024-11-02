@@ -1,8 +1,9 @@
 import time
+import random
 from Cell import Cell
 
 class Maze:
-    def __init__(self, x, y, num_rows, num_cols, cell_x_len, cell_y_len=None, win=None):
+    def __init__(self, x, y, num_rows, num_cols, cell_x_len, cell_y_len=None, win=None, seed=None):
         self._x = x
         self._y = y
         self._num_rows = num_rows
@@ -14,9 +15,11 @@ class Maze:
             self._cell_y_len = cell_x_len
         self._win = win
         self._cells = []
+        self._seed = random.seed(seed)
 
         self._create_cells()
         self._break_entrance_and_exit()
+        self._break_walls_r(0, 0)
 
     def _create_cells(self):
         for col in range(self._num_cols):
@@ -31,8 +34,9 @@ class Maze:
                     self._draw_cell(y, x)
     
     def _draw_cell(self, y, x):
-        self._cells[y][x].draw()
-        self._animate()
+        if self._win:
+            self._cells[y][x].draw()
+            self._animate()
     
     def _animate(self):
         self._win.redraw()
@@ -44,3 +48,46 @@ class Maze:
         if self._win:
             self._draw_cell(0, 0)
             self._draw_cell(-1, -1)
+
+    def _break_walls_r(self, i, j):
+        current_cell = self._cells[i][j]
+        current_cell.visited = True
+        while True:
+            to_visit = []
+            if j-1 >= 0:
+                if not self._cells[i][j-1].visited:
+                    to_visit.append(self._cells[i][j-1])
+            if j+1 < self._num_rows:
+                if not self._cells[i][j+1].visited:
+                    to_visit.append(self._cells[i][j+1])
+            if i-1 >= 0:
+                if not self._cells[i-1][j].visited:
+                    to_visit.append(self._cells[i-1][j])
+            if i+1 < self._num_cols:
+                if not self._cells[i+1][j].visited:
+                    to_visit.append(self._cells[i+1][j])
+            if not to_visit:
+                self._draw_cell(i, j)
+                break
+            rand_cell = random.randint(0, len(to_visit)-1)
+            next_cell = to_visit[rand_cell]
+            if next_cell._x1 > current_cell._x1:
+                current_cell.has_right = False
+                next_cell.has_left = False
+                self._draw_cell(i, j)
+                self._break_walls_r(i, j+1)
+            if next_cell._x1 < current_cell._x1:
+                current_cell.has_left = False
+                next_cell.has_right = False
+                self._draw_cell(i, j)
+                self._break_walls_r(i, j-1)
+            if next_cell._y1 > current_cell._y1:
+                current_cell.has_bottom = False
+                next_cell.has_top = False
+                self._draw_cell(i, j)
+                self._break_walls_r(i+1, j)
+            if next_cell._y1 < current_cell._y1:
+                current_cell.has_top = False
+                next_cell.has_bottom = False
+                self._draw_cell(i, j)
+                self._break_walls_r(i-1, j)

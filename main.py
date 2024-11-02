@@ -17,7 +17,7 @@ def main():
     length_y = (win_height-2*y_offset)//cells_per_col
     num_rows = win_width//length_x
     num_cols = win_height//length_y
-    maze = Maze(x_offset, y_offset, cells_per_row, cells_per_col, length_x, length_y, win)
+    maze = Maze(x_offset, y_offset, cells_per_row, cells_per_col, length_x, length_y, win, None)
     win.wait_for_close()
 
 main()

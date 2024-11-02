@@ -17,6 +17,7 @@ class Cell:
         self._x2 = x + length_x
         self._y2 = y + length_y
         self._win = win
+        self.visited = False
 
     def draw(self):
         tl = Point(self._x1, self._y1)
