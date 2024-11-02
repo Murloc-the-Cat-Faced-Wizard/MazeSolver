@@ -5,13 +5,21 @@ from Cell import Cell
 
 
 def main():
-    win = Window(800, 600)
+    win_width = 800
+    win_height = 600
+    win = Window(win_width, win_height)
     cells = []
-    for i in range(10):
-        cell = Cell((45*i+15),15,40,win)
-        cells.append(cell)
+    length = 40
+    x_start = 1
+    y_start = 1
+    for col in range(win_height//length):
+        for row in range(win_width//length):
+            cell = Cell((length*row+x_start),(length*col+y_start),length,win)
+            cells.append(cell)
     for cell in cells:
         cell.draw()
+    cells[0].draw_move(cells[20])
+    cells[1].draw_move(cells[2], True)
     #point1 = Point(400, 10)
     #point2 = Point(200, 590)
     #point3 = Point(690, 200)
