@@ -97,3 +97,50 @@ class Maze:
         for y in range(len(self._cells)):
             for x in range(len(self._cells[y])):
                 self._cells[y][x].visited = False
+
+    def solve(self):
+        solved = self._solve_r(0,0)
+        if solved:
+            return True
+        else:
+            return False
+
+    def _solve_r(self, i, j):
+        self._animate()
+        current_cell = self._cells[i][j]
+        current_cell.visited = True
+        if i == self._num_cols-1 and j == self._num_rows-1:
+            return True
+        if j-1 >= 0 and not current_cell.has_left:
+            next_cell = self._cells[i][j-1]
+            if not next_cell.visited:
+                current_cell.draw_move(next_cell)
+                solved = self._solve_r(i, j-1)
+                if solved:
+                    return True
+                current_cell.draw_move(next_cell, undo=True)
+        if j+1 < self._num_rows and not current_cell.has_right:
+            next_cell = self._cells[i][j+1]
+            if not next_cell.visited:
+                current_cell.draw_move(next_cell)
+                solved = self._solve_r(i, j+1)
+                if solved:
+                    return True
+                current_cell.draw_move(next_cell, undo=True)
+        if i-1 >= 0 and not current_cell.has_top:
+            next_cell = self._cells[i-1][j]
+            if not next_cell.visited:
+                current_cell.draw_move(next_cell)
+                solved = self._solve_r(i-1, j)
+                if solved:
+                    return True
+                current_cell.draw_move(next_cell, undo=True)
+        if i+1 < self._num_cols and not current_cell.has_bottom:
+            next_cell = self._cells[i+1][j]
+            if not next_cell.visited:
+                current_cell.draw_move(next_cell)
+                solved = self._solve_r(i+1, j)
+                if solved:
+                    return True
+                current_cell.draw_move(next_cell, undo=True)
+        return False

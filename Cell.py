@@ -30,7 +30,7 @@ class Cell:
             self._win.draw_line(Line(tl, bl), "#d9d9d9")
         
         if self.has_right:
-            self._win.draw_line(Line(tr, br), "RED")
+            self._win.draw_line(Line(tr, br), "PURPLE")
         else:
             self._win.draw_line(Line(tr, br), "#d9d9d9")
         
